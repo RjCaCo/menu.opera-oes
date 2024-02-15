@@ -51,21 +51,8 @@ class CarteiraDigital:
             print('Saldo insuficiente para realizar o saque.')
 
     def consultar_saldo(self):
-        try:
-            binance_api_url = "https://api.binance.com/api/v3/ticker/price"
-            params = {'symbol': 'BTCUSDT'}
-
-            response = requests.get(binance_api_url, params=params)
-            data = response.json()
-            
-            btc_price_usd = float(data['price'])
-            self.saldo_btc_atual = self.saldo_btc * btc_price_usd
-
-            print(f'Saldo em dólar: ${self.saldo_dolar:.2f}')
-            print(f'Saldo em BTC: {self.saldo_btc:.8f} BTC (Equivalente a ${self.saldo_btc_atual:.2f} em dólares)')
-
-        except Exception as e:
-            print(f"Erro ao consultar o valor atual do BTC: {e}")
+        print(f'Saldo em dólar: ${self.saldo_dolar:.2f}')
+        print(f'Saldo em BTC: {self.saldo_btc:.8f} BTC (Equivalente a ${self.saldo_btc * self.taxa_cambio_btc:.2f} em dólares)')
 
     def exibir_historico(self):
         if self.historico.strip() and self.historico.strip() != "Histórico :":
@@ -102,22 +89,18 @@ class CarteiraDigital:
 
     def consultar_valor_btc_atual(self):
         try:
-            binance_api_url = "https://api.binance.com/api/v3/ticker/price"
-            params = {'symbol': 'BTCUSDT'}
-
-            response = requests.get(binance_api_url, params=params)
+            url = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
+            response = requests.get(url)
             data = response.json()
-            
-            btc_price_usd = float(data['price'])
+            btc_price_usd = float(data["price"])
             print(f'Valor atual do BTC: ${btc_price_usd:.2f}')
-
         except Exception as e:
             print(f"Erro ao consultar o valor atual do BTC: {e}")
 
     def calcular_preco_medio_btc(self):
         try:
             if self.saldo_btc > 0:
-                preco_medio = self.saldo_dolar / (self.saldo_btc * self.taxa_cambio_btc)
+                preco_medio = self.saldo_dolar / self.saldo_btc
                 print(f'Preço médio de compra de BTC: ${preco_medio:.2f}')
             else:
                 print('Nenhuma compra de BTC realizada ainda.')
@@ -171,7 +154,7 @@ def main():
         elif opcao == "9":
             carteira.calcular_preco_medio_btc()
         elif opcao == "0":
-            print("Saindo do programa. Até logo!")
+            print("Saindo...")
             break
         else:
             print("Opção inválida. Por favor, escolha uma opção válida.")
