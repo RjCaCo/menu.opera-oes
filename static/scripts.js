@@ -40,3 +40,14 @@ function consultarValorBTC() {
 }
 consultarValorBTC(); // Consulta ao carregar a página
 setInterval(consultarValorBTC, 11000);
+
+document.getElementById('toggle-historico').addEventListener('click', function() {
+    var historicoDiv = document.getElementById('historico');
+    if (historicoDiv.style.display === 'none') {
+        historicoDiv.style.display = 'block';
+        this.innerText = 'Ocultar Histórico';
+    } else {
+        historicoDiv.style.display = 'none';
+        this.innerText = 'Mostrar Histórico';
+    }
+});

@@ -15,15 +15,9 @@
                 <h2><i class="fab fa-bitcoin"></i> Saldo em BTC: {{ saldo_btc }}</h2>
             </div>
             <div class="btc-info">
-                <h3>Valor Atual do Bitcoin:</h3>
-                <span id="valor_btc_atual">Carregando...</span>
+                <h2>Valor Atual do Bitcoin: <span id="valor_btc_atual">Carregando...</span></h2>
             </div>
-            <h2>Histórico de Transações:</h2>
-            <ul>
-                {% for transacao in historico %}
-                    <li>{{ transacao }}</li>
-                {% endfor %}
-            </ul>
+     
             <form action="/deposito" method="post">
                 <label for="valor_deposito">Valor do Depósito em Dólar:</label>
                 <input type="number" id="valor_deposito" name="valor_deposito" step="0.01" required>
@@ -47,6 +41,15 @@
                 <input type="number" id="valor_venda_btc" name="valor_venda_btc" step="0.01" required>
                 <button type="submit">Vender BTC</button>
             </form><br/>
+
+            <h2>Histórico de Transações:</h2>
+            <button id="toggle-historico">Mostrar Histórico</button>
+            <div id="historico" style="display: none;">
+                {% for transacao in historico %}
+                    <p>{{ transacao }}</p>
+                {% endfor %}
+            </div>
+
         </div>
         <script src="{{ url_for('static', filename='scripts.js') }}"></script>
     </body>
