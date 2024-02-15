@@ -100,33 +100,3 @@ function toggleHistorico() {
 
 
 document.getElementById('toggle-historico').addEventListener('click', toggleHistorico);
-
-/* document.getElementById('toggle-historico').addEventListener('click', function() {
-    var historicoDiv = document.getElementById('historico');
-    var historico = obter_historico_transacoes();
-
-    if (historico.length === 0) {
-        // Se não houver histórico, exibe uma mensagem
-        historicoDiv.innerText = 'Nenhuma operação realizada.';
-        historicoDiv.style.display = 'block';
-        this.innerText = 'Ocultar Histórico';
-    } else {
-        // Se houver histórico, exibe-o normalmente
-        historicoDiv.innerText = ''; // Limpa o conteúdo anterior
-        historico.forEach(function(transacao) {
-            historicoDiv.innerHTML += '<p>' + transacao + '</p>';
-        });
-        historicoDiv.style.display = 'block';
-        this.innerText = 'Ocultar Histórico';
-    }
-
-    if (historicoDiv.style.display === 'none') {
-        historicoDiv.style.display = 'block';
-        this.innerText = 'Ocultar Histórico';
-    } else {
-        historicoDiv.style.display = 'none';
-        this.innerText = 'Mostrar Histórico';
-    }
-
-});
- */
