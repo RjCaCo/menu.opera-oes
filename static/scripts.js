@@ -41,8 +41,85 @@ function consultarValorBTC() {
 consultarValorBTC(); // Consulta ao carregar a página
 setInterval(consultarValorBTC, 11000);
 
-document.getElementById('toggle-historico').addEventListener('click', function() {
+// Função para obter o histórico de transações armazenado no localStorage
+function obter_historico_transacoes() {
+    // Verifica se há histórico armazenado no localStorage
+    var historico = localStorage.getItem('historico_transacoes');
+    
+    // Se não houver histórico armazenado, retorna um array vazio
+    if (!historico) {
+        return [];
+    }
+    
+    // Se houver histórico armazenado, converte a string JSON para um array e retorna
+    return JSON.parse(historico);
+}
+
+function adicionarTransacao(transacao) {
+    adicionar_transacao_ao_historico(transacao);
+}
+
+function adicionar_transacao_ao_historico(transacao) {
+    // Obtém o histórico atual do localStorage
+    var historico = JSON.parse(localStorage.getItem('historico')) || [];
+
+    // Adiciona a nova transação ao histórico
+    historico.push(transacao);
+
+    // Atualiza o histórico no localStorage
+    localStorage.setItem('historico', JSON.stringify(historico));
+}
+
+// Exemplo de uso:
+var historico = obter_historico_transacoes();
+console.log(historico); // Mostra o histórico de transações recuperado do localStorage
+
+function toggleHistorico() {
     var historicoDiv = document.getElementById('historico');
+    var historico = JSON.parse(localStorage.getItem('historico')) || [];
+
+    // Se houver transações no histórico, exibe-as
+    if (historico.length > 0) {
+        var historicoHTML = historico.map(function(transacao) {
+            return '<p>' + transacao + '</p>';
+        }).join('');
+
+        historicoDiv.innerHTML = historicoHTML;
+    } else {
+        // Se não houver transações, exibe uma mensagem indicando isso
+        historicoDiv.innerHTML = '<p>Nenhuma operação realizada</p>';
+    }
+
+    // Alterna a visibilidade do histórico
+    if (historicoDiv.style.display === 'none') {
+        historicoDiv.style.display = 'block';
+    } else {
+        historicoDiv.style.display = 'none';
+    }
+}
+
+
+document.getElementById('toggle-historico').addEventListener('click', toggleHistorico);
+
+/* document.getElementById('toggle-historico').addEventListener('click', function() {
+    var historicoDiv = document.getElementById('historico');
+    var historico = obter_historico_transacoes();
+
+    if (historico.length === 0) {
+        // Se não houver histórico, exibe uma mensagem
+        historicoDiv.innerText = 'Nenhuma operação realizada.';
+        historicoDiv.style.display = 'block';
+        this.innerText = 'Ocultar Histórico';
+    } else {
+        // Se houver histórico, exibe-o normalmente
+        historicoDiv.innerText = ''; // Limpa o conteúdo anterior
+        historico.forEach(function(transacao) {
+            historicoDiv.innerHTML += '<p>' + transacao + '</p>';
+        });
+        historicoDiv.style.display = 'block';
+        this.innerText = 'Ocultar Histórico';
+    }
+
     if (historicoDiv.style.display === 'none') {
         historicoDiv.style.display = 'block';
         this.innerText = 'Ocultar Histórico';
@@ -50,4 +127,6 @@ document.getElementById('toggle-historico').addEventListener('click', function()
         historicoDiv.style.display = 'none';
         this.innerText = 'Mostrar Histórico';
     }
+
 });
+ */
