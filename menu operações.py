@@ -1,0 +1,163 @@
+import os
+import requests
+
+class CarteiraDigital:
+    def __init__(self):
+        self.saldo_dolar = 0.0
+        self.saldo_btc = 0.0
+        self.taxa_cambio_btc = 50000.0
+        self.historico_arquivo = "historico_transacoes.txt"
+        self._carregar_estado()
+
+    def _carregar_estado(self):
+        if os.path.exists(self.historico_arquivo):
+            with open(self.historico_arquivo, 'r') as arquivo:
+                linhas = arquivo.readlines()
+                if len(linhas) >= 2:
+                    try:
+                        self.saldo_dolar = float(linhas[0].strip())
+                        self.saldo_btc = float(linhas[1].strip())
+                    except ValueError:
+                        print("Erro ao carregar o estado. Histórico e saldo zerados.")
+                        self.saldo_dolar = 0.0
+                        self.saldo_btc = 0.0
+                        self.historico = "Nenhum histórico disponível."
+                        return
+                    self.historico = ''.join(linhas[2:])
+                else:
+                    self.historico = "Nenhum histórico disponível."
+        else:
+            self.historico = "Nenhum histórico disponível."
+
+    def _salvar_estado(self):
+        with open(self.historico_arquivo, 'w') as arquivo:
+            arquivo.write(f'{self.saldo_dolar:.2f}\n')
+            arquivo.write(f'{self.saldo_btc:.8f}\n')
+            arquivo.write(self.historico)
+
+    def _salvar_transacao(self, transacao):
+        self.historico += transacao + '\n'
+        self._salvar_estado()
+
+    def deposito(self, valor):
+        self.saldo_dolar += valor
+        self._salvar_transacao(f'Depósito de ${valor:.2f}')
+
+    def saque(self, valor):
+        if valor <= self.saldo_dolar:
+            self.saldo_dolar -= valor
+            self._salvar_transacao(f'Saque de ${valor:.2f}')
+        else:
+            print('Saldo insuficiente para realizar o saque.')
+
+    def consultar_saldo(self):
+        print(f'Saldo em dólar: ${self.saldo_dolar:.2f}')
+        print(f'Saldo em BTC: {self.saldo_btc:.8f} BTC (Equivalente a ${self.saldo_btc * self.taxa_cambio_btc:.2f} em dólares)')
+
+    def exibir_historico(self):
+        if self.historico.strip() and self.historico.strip() != "Histórico :":
+            print()
+            print("Histórico de Transações:")
+            print(self.historico)
+        else:
+            print("Nenhum histórico disponível.")
+
+    def apagar_historico(self, senha):
+        if senha == "777":
+            self.saldo_dolar = 0.0
+            self.saldo_btc = 0.0
+            self.historico = "Histórico e saldo zerados."
+            self._salvar_estado()
+            print("Histórico e saldo zerados.")
+        else:
+            print("Senha incorreta. Histórico e saldo não foram zerados.")
+
+    def comprar_btc(self, valor_em_dolar):
+        quantidade_btc = valor_em_dolar / self.taxa_cambio_btc
+        self.saldo_dolar -= valor_em_dolar
+        self.saldo_btc += quantidade_btc
+        self._salvar_transacao(f'Compra de {quantidade_btc:.8f} BTC por ${valor_em_dolar:.2f}')
+
+    def vender_btc(self, valor_em_dolar):
+        quantidade_btc = valor_em_dolar / self.taxa_cambio_btc
+        if quantidade_btc <= self.saldo_btc:
+            self.saldo_dolar += valor_em_dolar
+            self.saldo_btc -= quantidade_btc
+            self._salvar_transacao(f'Venda de {quantidade_btc:.8f} BTC por ${valor_em_dolar:.2f}')
+        else:
+            print('Saldo em BTC insuficiente para realizar a venda.')
+
+    def consultar_valor_btc_atual(self):
+        try:
+            url = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
+            response = requests.get(url)
+            data = response.json()
+            btc_price_usd = float(data["price"])
+            print(f'Valor atual do BTC: ${btc_price_usd:.2f}')
+        except Exception as e:
+            print(f"Erro ao consultar o valor atual do BTC: {e}")
+
+    def calcular_preco_medio_btc(self):
+        try:
+            if self.saldo_btc > 0:
+                preco_medio = self.saldo_dolar / self.saldo_btc
+                print(f'Preço médio de compra de BTC: ${preco_medio:.2f}')
+            else:
+                print('Nenhuma compra de BTC realizada ainda.')
+        except Exception as e:
+            print(f"Erro ao calcular o preço médio de compra de BTC: {e}")
+
+# Restante do código...
+
+# Função principal
+def main():
+    carteira = CarteiraDigital()
+
+    while True:
+        print("Diretório do arquivo:", os.path.abspath(carteira.historico_arquivo))
+
+        print("\nMenu Carteira Digital Ricardo:")
+        print("1. Depósito em dólar")
+        print("2. Saque")
+        print("3. Consultar Saldo")
+        print("4. Consultar Historico")
+        print("5. Apagar Histórico e Zerar Saldo")
+        print("6. Comprar BTC")
+        print("7. Vender BTC")
+        print("8. Consultar Valor Atual do BTC")
+        print("9. Calcular Preço Médio de Compra de BTC")
+        print("0. Sair")
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            valor_deposito = float(input("Digite o valor do depósito em dólar: "))
+            carteira.deposito(valor_deposito)
+        elif opcao == "2":
+            valor_saque = float(input("Digite o valor do saque em dólar: "))
+            carteira.saque(valor_saque)
+        elif opcao == "3":
+            carteira.consultar_saldo()
+        elif opcao == "4":
+            carteira.exibir_historico()
+        elif opcao == "5":
+            senha = input("Digite a senha para apagar o histórico e zerar o saldo: ")
+            carteira.apagar_historico(senha)
+        elif opcao == "6":
+            valor_em_dolar = float(input("Digite o valor em dólar a ser comprado em BTC: "))
+            carteira.comprar_btc(valor_em_dolar)
+        elif opcao == "7":
+            valor_em_dolar = float(input("Digite o valor em dólar a ser vendido em BTC: "))
+            carteira.vender_btc(valor_em_dolar)
+        elif opcao == "8":
+            carteira.consultar_valor_btc_atual()
+        elif opcao == "9":
+            carteira.calcular_preco_medio_btc()
+        elif opcao == "0":
+            print("Saindo...")
+            break
+        else:
+            print("Opção inválida. Por favor, escolha uma opção válida.")
+
+if __name__ == "__main__":
+    main()

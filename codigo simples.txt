@@ -1,0 +1,84 @@
+import os
+
+class CarteiraDigital:
+    def __init__(self):
+        self.saldo_dolar = 0.0
+        self.historico_arquivo = "historico_transacoes.txt"
+        self._carregar_estado()
+
+    def _carregar_estado(self):
+        if os.path.exists(self.historico_arquivo):
+            with open(self.historico_arquivo, 'r') as arquivo:
+                linhas = arquivo.readlines()
+                if len(linhas) > 0:
+                    self.saldo_dolar = float(linhas[0].strip())
+                    self.historico = ''.join(linhas[1:])
+                else:
+                    self.historico = "Nenhum histórico disponível."
+        else:
+            self.historico = "Nenhum histórico disponível."
+
+    def _salvar_estado(self):
+        with open(self.historico_arquivo, 'w') as arquivo:
+            arquivo.write(f'{self.saldo_dolar:.2f}\n')
+            arquivo.write(self.historico)
+
+    def _salvar_transacao(self, transacao):
+        self.historico += transacao + '\n'
+        self._salvar_estado()
+
+    def deposito(self, valor):
+        self.saldo_dolar += valor
+        self._salvar_transacao(f'Depósito de ${valor:.2f}')
+
+    def saque(self, valor):
+        if valor <= self.saldo_dolar:
+            self.saldo_dolar -= valor
+            self._salvar_transacao(f'Saque de ${valor:.2f}')
+        else:
+            print('Saldo insuficiente para realizar o saque.')
+
+    def consultar_saldo(self):
+        print(f'Saldo atual: ${self.saldo_dolar:.2f}')
+
+    def exibir_historico(self):
+        print("Histórico de Transações:")
+        print(self.historico)
+
+# Função principal
+def main():
+    carteira = CarteiraDigital()
+
+    while True:
+        print("\nMenu Carteira Digital Ricardo:")
+        print()
+        print("1. Depósito em dólar")
+        print("2. Saque")
+        print("3. Consultar Saldo")
+        print("0. Sair")
+        print()
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            valor_deposito = float(input("Digite o valor do depósito em dólar: "))
+            carteira.deposito(valor_deposito)
+        elif opcao == "2":
+            valor_saque = float(input("Digite o valor do saque em dólar: "))
+            carteira.saque(valor_saque)
+        elif opcao == "3":
+            carteira.consultar_saldo()
+        elif opcao == "0":
+            print("Saindo do programa. Até logo!")
+            break
+        else:
+            print("Opção inválida. Por favor, escolha uma opção válida.")
+
+if __name__ == "__main__":
+    main()
+    import os
+
+print("Diretório atual:", os.getcwd())
+print("historico_transacoes.txt")
+
+
