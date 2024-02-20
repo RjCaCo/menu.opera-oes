@@ -12,9 +12,10 @@ controller = CarteiraController(carteira)
 # Rota > página inicial
 @app.route('/')
 def index():
+    preco_medio_compras, preco_medio_vendas = controller.preco_medio()
     saldo = controller.consultar_saldo()
     historico = controller.consultar_historico()
-    return render_template('carteira_template.html', saldo_dolar=saldo['saldo_dolar'], saldo_btc=saldo['saldo_btc'], historico=historico)
+    return render_template('carteira_template.html', saldo_dolar=saldo['saldo_dolar'], saldo_btc=saldo['saldo_btc'], historico=historico, preco_medio_compras=preco_medio_compras, preco_medio_vendas=preco_medio_vendas)
 
 # Rota > depósito em dólar
 @app.route('/deposito', methods=['POST'])

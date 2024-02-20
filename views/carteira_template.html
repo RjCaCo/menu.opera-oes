@@ -11,11 +11,15 @@
         <div class="container">
             <h1>Carteira Digital</h1>
             <div class="saldo-info">
-                <h2><i class="fas fa-dollar-sign"></i> Saldo em Dólar: ${{ saldo_dolar }}</h2>
-                <h2><i class="fab fa-bitcoin"></i> Saldo em BTC: {{ saldo_btc }}</h2>
+                <h3><i class="fas fa-dollar-sign"></i> Saldo em Dólar: ${{ saldo_dolar }}</h3>
+                <h3><i class="fab fa-bitcoin"></i> Saldo em BTC: {{ saldo_btc }}</h3>
             </div>
             <div class="btc-info">
-                <h2>Valor Atual do Bitcoin: <span id="valor_btc_atual">Carregando...</span></h2>
+                <h3>Valor Atual do Bitcoin: <span id="valor_btc_atual">Carregando...</span></h3>
+            </div>
+            <div>
+                <h3>Preço médio de compra: {{ preco_medio_compras }}</h3>
+                <h3>Preço médio de venda: {{ preco_medio_vendas }}</h3>
             </div>
      
             <form action="/deposito" method="post" onsubmit="adicionarTransacao('Depósito de $' + document.getElementById('valor_deposito').value)">
