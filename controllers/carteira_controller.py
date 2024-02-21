@@ -19,32 +19,5 @@ class CarteiraController:
 
     def consultar_historico(self):
         return self.carteira.consultar_historico()
-    
-    def preco_medio(self):
-        historico = self.carteira.consultar_historico()
-        total_compras = 0
-        total_vendas = 0
-        quantidade_compras = 0
-        quantidade_vendas = 0
 
-        for transacao in historico:
-            if transacao['tipo'].startswith('Compra'):
-                total_compras += transacao['valor']
-                quantidade_compras += 1
-            elif transacao['tipo'].startswith('Venda'):
-                total_vendas += transacao['valor']
-                quantidade_vendas += 1
 
-        if quantidade_compras == 0:
-            preco_medio_compras = 0
-        else:
-            preco_medio_compras = total_compras / quantidade_compras
-
-        if quantidade_vendas == 0:
-            preco_medio_vendas = 0
-        else:
-            preco_medio_vendas = total_vendas / quantidade_vendas
-
-        return (preco_medio_compras, preco_medio_vendas)
-
-        #return (10000, 20000)

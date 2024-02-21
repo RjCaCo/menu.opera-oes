@@ -1,0 +1,66 @@
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Carteira Digital</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Carteira Digital</h1>
+            <div class="saldo-info">
+                <h3><i class="fas fa-dollar-sign"></i> Saldo em Dólar: ${{ saldo_dolar }}</h3>
+                <h3><i class="fab fa-bitcoin"></i> Saldo em BTC: {{ saldo_btc }}</h3>
+            </div>
+            <div class="btc-info">
+                <h3>Valor Atual do Bitcoin: <span id="valor_btc_atual">Carregando...</span></h3>
+            </div>
+            <div>
+                <h3>Preço médio de compra: {{ preco_medio_compras }}</h3>
+                <h3>Preço médio de venda: {{ preco_medio_vendas }}</h3>
+            </div>
+     
+            <form action="/deposito" method="post" onsubmit="adicionarTransacao('Depósito de $' + document.getElementById('valor_deposito').value)">
+                <label for="valor_deposito">Valor do Depósito em Dólar:</label>
+                <input type="number" id="valor_deposito" name="valor_deposito" step="0.01" required>
+                <button type="submit">Depositar <i class="fas fa-arrow-circle-up"></i></button>
+            </form><br/>
+    
+            <form action="/saque" method="post" onsubmit="adicionarTransacao('Saque de $' + document.getElementById('valor_saque').value)">
+                <label for="valor_saque">Valor do Saque em Dólar:</label>
+                <input type="number" id="valor_saque" name="valor_saque" step="0.01" required>
+                <button type="submit">Saque</button>
+            </form><br/>
+    
+            <form action="/comprar_btc" method="post" onsubmit="adicionarTransacao('Compra de BTC de ' + document.getElementById('valor_compra_btc').value + ' BTC por $' + document.getElementById('valor_compra_btc').value)">
+                <label for="valor_compra_btc">Valor da Compra de BTC em Dólar:</label>
+                <input type="number" id="valor_compra_btc" name="valor_compra_btc" step="0.01" required>
+                <button type="submit">Comprar BTC</button>
+            </form><br/>
+            
+            <form action="/vender_btc" method="post" onsubmit="adicionarTransacao('Venda de BTC de ' + document.getElementById('valor_venda_btc').value + ' BTC por $' + document.getElementById('valor_venda_btc').value)">
+                <label for="valor_venda_btc">Valor da Venda de BTC em Dólar:</label>
+                <input type="number" id="valor_venda_btc" name="valor_venda_btc" step="0.01" required>
+                <button type="submit">Vender BTC</button>
+            </form><br/>
+
+            <h2>Histórico de Transações:</h2>
+            <button id="toggle-historico">Mostrar Histórico</button>
+            <div id="historico" style="display: none;">
+                {% for transacao in historico %}
+                    <p>{{ transacao }}</p>
+                {% endfor %}
+            </div>
+
+        </div>
+        <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    </body>
+</html>
