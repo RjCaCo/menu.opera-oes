@@ -20,7 +20,7 @@ def main():
     while True:
         #preco_unitario_bitcoin = obter_preco_bitcoin()
         preco_unitario_bitcoin = float(input("Preço unitário do Bitcoin em Dólares: "))
-        print(f"Preço atual do Bitcoin: ${preco_unitario_bitcoin:.2f}")
+        print(f"Valor pago no BTC: ${preco_unitario_bitcoin:.2f}")
         
         quantidade_comprar = float(input("Quantidade de Bitcoin que deseja comprar (ou 0 para finalizar): "))
         

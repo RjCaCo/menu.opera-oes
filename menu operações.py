@@ -1,5 +1,6 @@
 import os
 import requests
+from tabulate import tabulate
 
 class CarteiraDigital:
     def __init__(self):
@@ -97,7 +98,41 @@ class CarteiraDigital:
         except Exception as e:
             print(f"Erro ao consultar o valor atual do BTC: {e}")
 
+    def calcular_operacao_compra(quantidade, preco_unitario):
+        valor_total = quantidade * preco_unitario
+        return valor_total
+    
     def calcular_preco_medio_btc(self):
+        total_quantidade_comprada = 0
+        total_valor_gasto = 0
+        historico_compras = []
+
+        while True:
+            #preco_unitario_bitcoin = obter_preco_bitcoin()
+            preco_unitario_bitcoin = float(input("Preço unitário do Bitcoin em Dólares: "))
+            print(f"Valor pago no BTC: ${preco_unitario_bitcoin:.2f}")
+            
+            quantidade_comprar = float(input("Quantidade de Bitcoin que deseja comprar (ou 0 para finalizar): "))
+            
+            if quantidade_comprar == 0:
+                break
+            
+            total_quantidade_comprada += quantidade_comprar
+            
+            valor_total_compra = quantidade_comprar * preco_unitario_bitcoin
+            total_valor_gasto += valor_total_compra
+            
+            preco_medio = total_valor_gasto / total_quantidade_comprada if total_quantidade_comprada > 0 else 0
+            
+            historico_compras.append([quantidade_comprar, preco_unitario_bitcoin, valor_total_compra, total_quantidade_comprada, preco_medio])
+        
+        if total_quantidade_comprada == 0:
+            print("Nenhuma compra realizada.")
+        else:
+            headers = ["Quantidade Comprada", "Preço Unitário (USD)", "Valor Total (USD)", "Quantidade Total", "Preço Médio (USD)"]
+            print(tabulate(historico_compras, headers=headers, tablefmt="pretty"))
+
+    """ def calcular_preco_medio_btc(self):
         try:
             if self.saldo_btc > 0:
                 preco_medio = self.saldo_dolar / self.saldo_btc
@@ -105,10 +140,8 @@ class CarteiraDigital:
             else:
                 print('Nenhuma compra de BTC realizada ainda.')
         except Exception as e:
-            print(f"Erro ao calcular o preço médio de compra de BTC: {e}")
-
-# Restante do código...
-
+            print(f"Erro ao calcular o preço médio de compra de BTC: {e}") 
+  """
 # Função principal
 def main():
     carteira = CarteiraDigital()
