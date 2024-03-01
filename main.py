@@ -1,5 +1,4 @@
 import requests
-import threading
 from models.carteira_model import CarteiraDigital
 from controllers.carteira_controller import CarteiraController
 from flask import Flask, render_template, request, redirect, url_for, jsonify
@@ -13,10 +12,16 @@ controller = CarteiraController(carteira)
 def index():
     saldo = controller.consultar_saldo()
     historico = controller.consultar_historico()
+    preco_medio = controller.preco_medio()
+    valor_btc_atual = controller.valor_btc_atual()
+    invest_dolar = controller.valor_invest_dolar()
     return render_template('carteira_template.html', 
                            saldo_dolar=saldo['saldo_dolar'], 
                            saldo_btc=saldo['saldo_btc'], 
-                           historico=historico)
+                           historico=historico,
+                           preco_medio=preco_medio,
+                           valor_btc_atual=valor_btc_atual,
+                           invest_dolar=invest_dolar)
 
 @app.route('/deposito', methods=['POST'])
 def deposito():
@@ -30,12 +35,17 @@ def saque():
     controller.realizar_saque(valor_saque)
     return redirect(url_for('index'))
 
+@app.route('/cotacao_btc', methods=['POST'])
+def cotacao_btc():
+    valor_cotacao = float(request.form['cotacao_btc'])
+    controller.valor_cotacao(valor_cotacao)
+    return redirect(url_for('index'))
+
 @app.route('/comprar_btc', methods=['POST'])
 def comprar_btc():
     valor_compra_btc = float(request.form['valor_compra_btc'])
     controller.realizar_compra_btc(valor_compra_btc)
     return redirect(url_for('index'))
-
 
 @app.route('/vender_btc', methods=['POST'])
 def vender_btc():
@@ -55,11 +65,15 @@ def consultar_saldo():
 @app.route('/consultar_valor_btc_atual')
 def consultar_valor_btc_atual():
     try:
-        url = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
+        """ url = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
         response = requests.get(url)
         data = response.json()
         btc_price_usd = float(data["price"])
         carteira.atualizar_taxa_cambio_btc(btc_price_usd)
+        return jsonify({'valor_btc': btc_price_usd}) """
+        btc_price_usd = float(request.form['cotacao_btc'])
+        carteira.atualizar_taxa_cambio_btc(btc_price_usd)
+        carteira.cotacao_btc(btc_price_usd)
         return jsonify({'valor_btc': btc_price_usd})
     except Exception as e:
         print(f"Erro ao consultar o valor atual do BTC: {e}")
@@ -83,7 +97,6 @@ def zerar_saldos():
 @app.route('/favicon.ico')
 def favicon():
     return redirect("/", code=302)
-
 
 if __name__ == '__main__':
     app.run(debug=True)

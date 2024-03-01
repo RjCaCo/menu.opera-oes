@@ -19,5 +19,17 @@ class CarteiraController:
 
     def consultar_historico(self):
         return self.carteira.consultar_historico()
+    
+    def preco_medio(self):
+        return self.carteira.consulta_preco_medio()
+    
+    def valor_cotacao(self, valor):
+        return self.carteira.cotacao_btc(valor)
+    
+    def valor_btc_atual(self):
+        return self.carteira.valor_btc_atual()
+    
+    def valor_invest_dolar(self):
+        return self.carteira.valor_invest_dolar()
 
 

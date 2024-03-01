@@ -12,12 +12,11 @@
     <div class="container">
         <div class="coluna coluna-left">
             <div class="saldo-info">
-                <h3 class="saldo-dolar"><i class="fas fa-dollar-sign"></i> Saldo em Dólar: ${{ saldo_dolar }}</h3>
-                <h3 class="saldo-btc"><i class="fab fa-bitcoin"></i> Saldo em BTC: {{ saldo_btc }}</h3>
-            </div>
-            <div class="btc-info">
-                <h3>Valor Atual do Bitcoin: <span id="valor_btc_atual">Carregando...</span></h3>
-                <h3>Preço médio de compra: <span id="preco-medio-compras"></span></h3>
+                <h3 class="saldo-dolar">Saldo em Dólar: ${{ saldo_dolar }}</h3>
+                <h3 class="saldo-btc">Saldo em BTC: {{ saldo_btc }}</h3>
+                <h4>Valor total do investimento em US$: {{ invest_dolar }}</h4>
+                <h3>Valor Atual do Bitcoin: <span id="valor_btc_atual">{{ valor_btc_atual }}</span></h3>
+                <h3>Preço médio de compra: <span id="preco-medio-compras">US$ {{ preco_medio }}</span></h3>
             </div>
             <form action="/zerar_saldos" method="get">
                 <button type="submit">Zerar Saldo</button>
@@ -48,6 +47,13 @@
                 <input type="number" id="valor_venda_btc" name="valor_venda_btc" step="0.01" required>
                 <button type="submit">Vender BTC (em US$)</button>
             </form><br/>
+
+            <form action="/cotacao_btc" method="post">
+                <label for="cotacao_btc"></label>
+                <input type="number" id="cotacao_btc" name="cotacao_btc" step="0.01" required>
+                <button type="submit">Cotacão do BTC (em US$)</button>
+            </form><br/>
+
             <div id="mensagem-erro" style="color: red;"></div>
         </div>
     </div>

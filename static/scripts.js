@@ -19,8 +19,8 @@ function consultarValorBTC() {
             document.getElementById('valor_btc_atual').innerText = data.valor_btc;
         })
 }
-consultarValorBTC();
-setInterval(consultarValorBTC, 5000);
+/* consultarValorBTC();
+setInterval(consultarValorBTC, 5000); */
 
 function obter_historico_transacoes() {
     var historico = localStorage.getItem('historico_transacoes');
